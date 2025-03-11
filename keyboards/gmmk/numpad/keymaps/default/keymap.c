@@ -46,11 +46,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef ENCODER_ENABLE
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (!clockwise) {
-      tap_code(KC_VOLU);
+    if (clockwise) {
+        if (get_mods() & MOD_MASK_ALT) {
+            tap_code(KC_TAB);
+        } else if (IS_LAYER_ON(1)) {
+            tap_code(KC_VOLU);
+        } else {
+            tap_code(KC_MS_WH_DOWN);
+        }
     } else {
-      tap_code(KC_VOLD);
+        if (get_mods() & MOD_MASK_ALT) {
+            register_mods(MOD_BIT(KC_LSFT));
+            tap_code(KC_TAB);
+            unregister_mods(MOD_BIT(KC_LSFT));
+        } else if (IS_LAYER_ON(1)) {
+            tap_code(KC_VOLD);
+        } else {
+            tap_code(KC_MS_WH_UP);
+        }
     }
     return true;
+}
 }
 #endif
